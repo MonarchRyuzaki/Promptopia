@@ -1,12 +1,17 @@
 import Prompt from "@models/prompt";
 import { connectToDB } from "@utils/database";
-import { connect } from "mongoose";
 
 export const GET = async (req) => {
   try {
     await connectToDB();
-    const prompts = await Prompt.find({}).populate('creator');
-    return new Response(JSON.stringify(prompts), { status: 200 });
+    const prompts = await Prompt.find({}).populate("creator");
+    return new Response(JSON.stringify(prompts), {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store", // Disable caching
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.log(error);
     return new Response("Failed to fetch all prompts", { status: 500 });
